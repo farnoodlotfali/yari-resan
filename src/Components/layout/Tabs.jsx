@@ -39,6 +39,7 @@ const Tab = ({ tab }) => {
         py: 1,
         px: 1.5,
         width: 230,
+        minWidth: 200,
         borderTopLeftRadius: (theme) => theme.shape.borderRadius * 2,
         borderTopRightRadius: (theme) => theme.shape.borderRadius * 2,
         position: "relative",
@@ -48,6 +49,7 @@ const Tab = ({ tab }) => {
         transition: "all 0.3s",
         zIndex: active ? 10 : 1,
         cursor: "default",
+        whiteSpace: "nowrap",
         ":after": {
           content: '""',
           position: "absolute",
@@ -75,7 +77,7 @@ const Tab = ({ tab }) => {
       }}
       onClick={() => handleClick()}
     >
-      <Typography fontSize={14} color="grey.700">
+      <Typography fontSize={14} color="grey.700" textOverflow="ellipsis" overflow="hidden">
         {tab.title}
       </Typography>
       <IconButton
@@ -103,6 +105,7 @@ const Tabs = () => {
         bgcolor: "background.paper",
         mt: 2,
         px: 1,
+        overflowX: "auto",
       }}
       alignItems="center"
     >

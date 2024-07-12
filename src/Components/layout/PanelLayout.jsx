@@ -10,25 +10,19 @@ import AppLoading from "../loadings/AppLoading";
 const PanelLayout = ({ children }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [hasHydrated, tabs, activeTab, setActiveTab, handleActiveTab] =
-    useTabsStore(
-      useShallow((state) => [
-        state._hasHydrated,
-        state.tabs,
-        state.activeTab,
-        state.setActiveTab,
-        state.handleActiveTab,
-      ])
-    );
+  const [mount, setMount] = useState(false);
+  const [handleActiveTab] = useTabsStore(
+    useShallow((state) => [state.handleActiveTab])
+  );
+
+  useEffect(() => {
+    setMount(true);
+  }, []);
 
   useEffect(() => {
     const handleStart = (url) => {
       url !== router.asPath && setLoading(true);
-      console.log(url, router.asPath);
-      // const find = tabs.find((tab) => tab.url === url);
-      // if (find) {
-      //   setActiveTab(find);
-      // }
+
       handleActiveTab({
         url: url,
       });
@@ -48,7 +42,7 @@ const PanelLayout = ({ children }) => {
     };
   });
 
-  if (!hasHydrated) {
+  if (!mount) {
     return <AppLoading />;
   }
 

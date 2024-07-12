@@ -1,5 +1,3 @@
-import { ThemeOptions } from "@mui/material";
-
 export const BOXSHADOW = {
   light: [
     "none",

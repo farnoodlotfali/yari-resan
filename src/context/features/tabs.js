@@ -75,6 +75,3 @@ export const useTabsStore = create()(
     }
   )
 );
-useTabsStore.setState(() => {
-  return { _hasHydrated: true };
-});

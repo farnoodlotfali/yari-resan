@@ -55,7 +55,7 @@ const Home = () => {
         title: `بیمه شده: ${
           insure.attributes.firstName + " " + insure.attributes.lastName
         }`,
-        url: `${PAGES_URL.Home.home}/${insure.id}`,
+        url: `${PAGES_URL.Home.home}${insure.id}`,
       },
       router
     );
@@ -130,6 +130,7 @@ const Home = () => {
                     borderStyle: "solid",
                     borderColor: "grey.300",
                     display: "flex",
+                    flexDirection: { md: "row", xs: "column" },
                     alignItems: "center",
                     cursor: "pointer",
                     p: 2,
@@ -142,7 +143,10 @@ const Home = () => {
                   onClick={() => handleClickCard(insure)}
                 >
                   <Avatar
-                    sx={{ width: 80, height: 80 }}
+                    sx={{
+                      width: { md: 80, xs: 65 },
+                      height: { md: 80, xs: 65 },
+                    }}
                     alt="man"
                     src="/assets/images/man.jpg"
                   />
