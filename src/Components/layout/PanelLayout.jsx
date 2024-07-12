@@ -1,21 +1,54 @@
-import {
-  Box,
-  Card,
-  Container,
-  IconButton,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { useState } from "react";
+import { Box, Container } from "@mui/material";
 import Header from "./Header";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-const PanelLayout = ({ children }) => {
-  const [first, setfirst] = useState(0);
+import Tabs from "./Tabs";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useTabsStore } from "@/context/features/tabs";
+import { useShallow } from "zustand/react/shallow";
+import AppLoading from "../loadings/AppLoading";
 
-  const handleClick = (id) => {
-    setfirst(id);
-  };
+const PanelLayout = ({ children }) => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [hasHydrated, tabs, setActiveTab, handleActiveTab] = useTabsStore(
+    useShallow((state) => [
+      state._hasHydrated,
+      state.tabs,
+      state.setActiveTab,
+      state.handleActiveTab,
+    ])
+  );
+
+  useEffect(() => {
+    const handleStart = (url) => {
+      url !== router.asPath && setLoading(true);
+      const find = tabs.find((tab) => tab.url === url);
+      if (find) {
+        setActiveTab(find);
+      }
+      handleActiveTab({
+        url: url,
+      });
+    };
+    const handleComplete = (url) => {
+      setLoading(false);
+    };
+
+    router.events.on("routeChangeStart", handleStart);
+    router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
+
+    return () => {
+      router.events.off("routeChangeStart", handleStart);
+      router.events.off("routeChangeComplete", handleComplete);
+      router.events.off("routeChangeError", handleComplete);
+    };
+  });
+
+  if (!hasHydrated) {
+    return <AppLoading />;
+  }
+
   return (
     <Container
       sx={{
@@ -26,80 +59,32 @@ const PanelLayout = ({ children }) => {
     >
       <Header />
 
-      <Stack
-        direction="row"
-        sx={{
-          bgcolor: "white",
-          mt: 2,
-          px: 12,
-        }}
-      >
-        <X active={first === 0} id={0} handleClick={handleClick} />
-        <X active={first === 1} id={1} handleClick={handleClick} />
-      </Stack>
+      <Tabs />
+
       <Box
         sx={{
           bgcolor: "grey.300",
           p: 2,
           borderRadius: 3,
+          minHeight: 900,
         }}
       >
-        {children}
+        {loading ? (
+          <Box
+            sx={{
+              minHeight: "inherit",
+              borderRadius: 3,
+              bgcolor: "background.paper",
+              pt: 6,
+            }}
+          >
+            <AppLoading />
+          </Box>
+        ) : (
+          children
+        )}
       </Box>
     </Container>
-  );
-};
-
-const X = ({ active, id, handleClick }) => {
-  return (
-    <Box
-      sx={{
-        bgcolor: active ? "grey.300" : "white",
-        py: 1,
-        px: 1.5,
-        width: 230,
-        borderTopLeftRadius: (theme) => theme.shape.borderRadius * 2,
-        borderTopRightRadius: (theme) => theme.shape.borderRadius * 2,
-        position: "relative",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        transition: "all 0.3s",
-        zIndex: active ? 10 : 1,
-        ":after": {
-          content: '""',
-          position: "absolute",
-          width: 0,
-          height: 0,
-          borderRight: "10px solid transparent",
-          borderBottom: "6px solid",
-          borderBottomColor: active ? "grey.300" : "white",
-          right: -8,
-          bottom: 0,
-          transition: "all 0.2s",
-        },
-        ":before": {
-          content: '""',
-          position: "absolute",
-          width: 0,
-          height: 0,
-          borderLeft: "10px solid transparent",
-          borderBottom: "6px solid",
-          borderBottomColor: active ? "grey.300" : "white",
-          left: -8,
-          bottom: 0,
-          transition: "all 0.2s",
-        },
-      }}
-      onClick={() => handleClick(id)}
-    >
-      <Typography fontSize={14} color="grey.700">
-        جستجو بیمه‌شده
-      </Typography>
-      <IconButton size="small">
-        <CloseRoundedIcon sx={{ fontSize: 15 }} />
-      </IconButton>
-    </Box>
   );
 };
 

@@ -1,6 +1,13 @@
 import { Badge, Box, ButtonBase } from "@mui/material";
 
-const ActionButton = ({ bgcolor, icon, badge, sx = {}, type = "button" }) => {
+const ActionButton = ({
+  bgcolor,
+  icon,
+  badge,
+  sx = {},
+  type = "button",
+  onClick,
+}) => {
   const btn = (
     <Box
       sx={{
@@ -12,6 +19,11 @@ const ActionButton = ({ bgcolor, icon, badge, sx = {}, type = "button" }) => {
       }}
       component={ButtonBase}
       type={type}
+      onClick={() => {
+        if (onClick) {
+          onClick();
+        }
+      }}
     >
       {icon}
     </Box>

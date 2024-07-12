@@ -74,7 +74,7 @@ const Header = () => {
               anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
               variant="dot"
             >
-              <Avatar alt="Natacha" src="/assets/images/man.jpg" />
+              <Avatar alt="man" src="/assets/images/man.jpg" />
             </StyledBadge>
           </Box>
         </Stack>
