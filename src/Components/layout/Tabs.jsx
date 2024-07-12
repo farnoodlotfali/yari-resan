@@ -11,12 +11,12 @@ const Tab = ({ tab }) => {
   const router = useRouter();
 
   const [activeTab, tabs, setActiveTab, handleRemoveTab] = useTabsStore(
-    (state) => [
+    useShallow((state) => [
       state.activeTab,
       state.tabs,
       state.setActiveTab,
       state.handleRemoveTab,
-    ]
+    ])
   );
 
   const handleClickRemove = () => {
@@ -92,8 +92,8 @@ const Tab = ({ tab }) => {
 };
 
 const Tabs = () => {
-  const [tabs, addNewTab] = useTabsStore(
-    useShallow((state) => [state.tabs, state.addNewTab])
+  const [tabs, addEmptyTab] = useTabsStore(
+    useShallow((state) => [state.tabs, state.addEmptyTab])
   );
 
   return (
@@ -114,7 +114,7 @@ const Tabs = () => {
         return <Tab key={tab.id} tab={tab} />;
       })}
       <ActionButton
-        onClick={addNewTab}
+        onClick={addEmptyTab}
         sx={{ bgcolor: "grey.300", height: 30, width: 30, mx: 1 }}
         icon={<AddRoundedIcon sx={{ fontSize: 15 }} />}
       />

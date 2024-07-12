@@ -1,3 +1,6 @@
+import moment from 'jalali-moment';
+
+
 // should return query string with given filter object
 export const renderQueryKey = (queryKeys) => {
   const newQueryKeys = queryKeys;
@@ -13,4 +16,9 @@ export const renderQueryKey = (queryKeys) => {
   });
 
   return newQueryKeys;
+};
+
+// convert Gregorian year to jalali year
+export const convertGrToJa = (val) => {
+  return moment(String(val), "YYYY-MM-DD").locale("fa").format("YYYY/MM/DD");
 };

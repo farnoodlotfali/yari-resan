@@ -16,9 +16,14 @@ import Image from "next/image";
 import { PAGES_URL } from "@/constants/pagesUrl";
 import { useRouter } from "next/router";
 import ItemData from "@/Components/ItemData";
+import { useTabsStore } from "@/context/features/tabs";
+import { useShallow } from "zustand/react/shallow";
 
 const Home = () => {
   const router = useRouter();
+  const [handleAddTab] = useTabsStore(
+    useShallow((state) => [state.handleAddTab])
+  );
 
   const { handleSubmit, reset, register } = useForm({
     values: {
@@ -42,6 +47,18 @@ const Home = () => {
     } else {
       router.push(PAGES_URL.Home.home).then(() => reset());
     }
+  };
+
+  const handleClickCard = (insure) => {
+    handleAddTab(
+      {
+        title: `بیمه شده: ${
+          insure.attributes.firstName + " " + insure.attributes.lastName
+        }`,
+        url: `${PAGES_URL.Home.home}/${insure.id}`,
+      },
+      router
+    );
   };
 
   return (
@@ -114,6 +131,7 @@ const Home = () => {
                     borderColor: "grey.300",
                     display: "flex",
                     alignItems: "center",
+                    cursor: "pointer",
                     p: 2,
                     gap: 2,
                     boxShadow: 0,
@@ -121,6 +139,7 @@ const Home = () => {
                       boxShadow: 1,
                     },
                   }}
+                  onClick={() => handleClickCard(insure)}
                 >
                   <Avatar
                     sx={{ width: 80, height: 80 }}
@@ -136,7 +155,7 @@ const Home = () => {
                     </Typography>
                     <ItemData
                       title="کد ملی"
-                      value={insure.attributes.firstName}
+                      value={insure.attributes.nationalCode}
                     />
                     <ItemData title="نسبت" value={insure.attributes.relation} />
                     <ItemData title="آدرس" value={insure.attributes.address} />

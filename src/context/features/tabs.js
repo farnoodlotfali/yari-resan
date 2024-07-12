@@ -9,7 +9,7 @@ const newTab = (id) => ({
   title: "جستجو بیمه‌شده",
 });
 
-const TABS = [newTab(1), { id: 2, url: "/test", title: "تست" }];
+const TABS = [newTab(1)];
 const initialState = {
   activeTab: TABS[0],
   _hasHydrated: false,
@@ -21,7 +21,7 @@ export const useTabsStore = create()(
     immer((set, get) => ({
       ...initialState,
 
-      addNewTab: () =>
+      addEmptyTab: () =>
         set((state) => {
           state.tabs = [
             ...state.tabs,
@@ -52,6 +52,18 @@ export const useTabsStore = create()(
           });
 
           state.activeTab = updated;
+        }),
+
+      handleAddTab: (tab, router) =>
+        set((state) => {
+          const newTab = {
+            ...tab,
+            id: state.tabs[state.tabs.length - 1].id + 1,
+          };
+
+          state.activeTab = newTab;
+          state.tabs = [...state.tabs, newTab];
+          router.push(newTab.url);
         }),
 
       reset: () => {
